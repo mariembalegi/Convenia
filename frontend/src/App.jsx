@@ -28,17 +28,18 @@ function App() {
       : { name: formData.name, email: formData.email, password: formData.password, role: formData.role };
 
     try {
-      const response = await fetch(`http://localhost:8081${endpoint}`, {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+		credentials: 'include',  // Important for sessions
         body: JSON.stringify(payload)
       });
       
       const data = await response.json();
       
       if (response.ok) {
-        alert(`${isLogin ? 'Connexion' : 'Inscription'} réussie!\nBienvenue ${data.name || formData.name}!`);
-        console.log('Données utilisateur:', data);
+        alert(`${isLogin ? 'Connexion' : 'Inscription'} réussie!\nBienvenue ${data.user.fullName}!`);
+        console.log('Données utilisateur:', data.user);
       } else {
         alert(data.message || 'Une erreur est survenue');
       }

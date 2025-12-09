@@ -9,6 +9,8 @@ import jakarta.ejb.Local;
 public interface UserServiceLocal {
 
     User login(String username, String password);
+    
+    User loginByEmail(String email, String password); // ADD THIS
 
     void create(User user);
 
@@ -19,6 +21,8 @@ public interface UserServiceLocal {
     User findById(Long id);
 
     User findByUsername(String username);
+    
+    User findByEmail(String email); // ADD THIS
 
     List<User> findAll();
 }

@@ -79,4 +79,29 @@ public class UserService implements UserServiceLocal {
 
         return null;
     }
+
+	@Override
+	public User loginByEmail(String email, String password) {
+		// TODO Auto-generated method stub
+		User u = findByEmail(email);
+        if (u == null) return null;
+        if (u.getPassword().equals(password)) {
+            return u;
+        }
+        return null;
+	}
+
+	@Override
+	public User findByEmail(String email) {
+		// TODO Auto-generated method stub
+		try {
+            TypedQuery<User> q = em.createQuery(
+                "SELECT u FROM User u WHERE u.email = :email", User.class
+            );
+            q.setParameter("email", email);
+            return q.getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+	}
 }
