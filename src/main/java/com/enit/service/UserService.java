@@ -1,4 +1,4 @@
-package com.enit.services;
+package com.enit.service;
 
 import java.util.List;
 
@@ -9,42 +9,27 @@ import jakarta.persistence.TypedQuery;
 
 import com.enit.entities.User;
 
-import org.mindrot.jbcrypt.BCrypt;
-
 @Stateless
 public class UserService implements UserServiceLocal {
 
     @PersistenceContext(unitName = "myPU")
     private EntityManager em;
 
-    // ------------------------------
     // CREATE USER
-    // ------------------------------
     @Override
     public void create(User user) {
-        // Hash du mot de passe avant enregistrement
-        String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        user.setPassword(hashed);
-
+        // Pas de hashage, on enregistre le mot de passe tel quel
         em.persist(user);
     }
 
-    // ------------------------------
     // UPDATE USER
-    // ------------------------------
     @Override
     public User update(User user) {
-        // Si le mot de passe n'est pas encore hashé, on le hash
-        if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
-            String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-            user.setPassword(hashed);
-        }
+        // On met à jour directement
         return em.merge(user);
     }
 
-    // ------------------------------
-    // DELETE USER
-    // ------------------------------
+    // DELETE
     @Override
     public void delete(Long id) {
         User u = em.find(User.class, id);
@@ -53,17 +38,13 @@ public class UserService implements UserServiceLocal {
         }
     }
 
-    // ------------------------------
     // FIND BY ID
-    // ------------------------------
     @Override
     public User findById(Long id) {
         return em.find(User.class, id);
     }
 
-    // ------------------------------
     // FIND USER BY USERNAME
-    // ------------------------------
     @Override
     public User findByUsername(String username) {
         try {
@@ -73,29 +54,26 @@ public class UserService implements UserServiceLocal {
             q.setParameter("x", username);
             return q.getSingleResult();
         } catch (Exception e) {
-            return null; // username non trouvé
+            return null;
         }
     }
 
-    // ------------------------------
-    // FIND ALL USERS
-    // ------------------------------
+    // FIND ALL
     @Override
     public List<User> findAll() {
         return em.createQuery("SELECT u FROM User u", User.class)
                  .getResultList();
     }
 
-    // ------------------------------
-    // LOGIN
-    // ------------------------------
+    // LOGIN without hash
     @Override
     public User login(String username, String password) {
         User u = findByUsername(username);
+
         if (u == null) return null;
 
-        // Vérifier le mot de passe hashé
-        if (BCrypt.checkpw(password, u.getPassword())) {
+        // Comparaison directe (sans hash)
+        if (u.getPassword().equals(password)) {
             return u;
         }
 
