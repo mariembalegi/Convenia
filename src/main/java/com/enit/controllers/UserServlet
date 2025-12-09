@@ -1,0 +1,91 @@
+package com.enit.Controllers;
+
+import java.io.IOException;
+
+import com.enit.entities.User;
+import com.enit.service.UserServiceLocal;
+
+import jakarta.ejb.EJB;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+@WebServlet("/auth")
+public class UserServlet extends HttpServlet {
+
+    @EJB
+    private UserServiceLocal userService;
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String action = request.getParameter("action");
+
+        if ("signup".equals(action)) {
+            handleSignup(request, response);
+        } 
+        else if ("signin".equals(action)) {
+            handleSignin(request, response);
+        } 
+        else {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action");
+        }
+    }
+
+    // --------------------------
+    // SIGN UP
+    // --------------------------
+    private void handleSignup(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String email    = request.getParameter("email");
+
+        // Vérifier si username existe déjà
+        if (userService.findByUsername(username) != null) {
+            request.setAttribute("error", "Username already exists!");
+            request.getRequestDispatcher("signup.jsp").forward(request, response);
+            return;
+        }
+
+        // Créer l'utilisateur
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setEmail(email);
+
+        userService.create(user);
+
+        // Redirection vers login
+        response.sendRedirect("signin.jsp");
+    }
+
+    // --------------------------
+    // SIGN IN
+    // --------------------------
+    private void handleSignin(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+
+        User user = userService.login(username, password);
+
+        if (user == null) {
+            request.setAttribute("error", "Invalid username or password!");
+            request.getRequestDispatcher("signin.jsp").forward(request, response);
+            return;
+        }
+
+        // login OK
+        HttpSession session = request.getSession();
+        session.setAttribute("user", user);
+
+        response.sendRedirect("home.jsp");
+    }
+}
