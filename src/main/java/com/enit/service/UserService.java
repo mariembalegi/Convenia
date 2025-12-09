@@ -1,15 +1,13 @@
-package com.enit.services;
+package com.enit.service;
 
 import java.util.List;
+
+import com.enit.entities.User;
 
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-
-import com.enit.entities.User;
-
-import org.mindrot.jbcrypt.BCrypt;
 
 @Stateless
 public class UserService implements UserServiceLocal {
@@ -22,10 +20,7 @@ public class UserService implements UserServiceLocal {
     // ------------------------------
     @Override
     public void create(User user) {
-        // Hash du mot de passe avant enregistrement
-        String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        user.setPassword(hashed);
-
+        // Mot de passe enregistré tel quel (NON SÉCURISÉ)
         em.persist(user);
     }
 
@@ -34,11 +29,6 @@ public class UserService implements UserServiceLocal {
     // ------------------------------
     @Override
     public User update(User user) {
-        // Si le mot de passe n'est pas encore hashé, on le hash
-        if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
-            String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-            user.setPassword(hashed);
-        }
         return em.merge(user);
     }
 
@@ -73,7 +63,7 @@ public class UserService implements UserServiceLocal {
             q.setParameter("x", username);
             return q.getSingleResult();
         } catch (Exception e) {
-            return null; // username non trouvé
+            return null;
         }
     }
 
@@ -94,8 +84,8 @@ public class UserService implements UserServiceLocal {
         User u = findByUsername(username);
         if (u == null) return null;
 
-        // Vérifier le mot de passe hashé
-        if (BCrypt.checkpw(password, u.getPassword())) {
+        // Vérification simple (NON SÉCURISÉE)
+        if (u.getPassword() != null && u.getPassword().equals(password)) {
             return u;
         }
 

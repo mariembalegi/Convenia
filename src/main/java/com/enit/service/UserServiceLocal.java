@@ -1,4 +1,4 @@
-package com.enit.services;
+package com.enit.service;
 
 import java.util.List;
 import com.enit.entities.User;
