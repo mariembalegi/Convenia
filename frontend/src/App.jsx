@@ -47,7 +47,7 @@ function App() {
       alert('Erreur de connexion au serveur');
     }
   };
-
+// Permet de basculer entre Login et Signup
   const toggleForm = () => {
     setIsLogin(!isLogin);
     setFormData({ name: '', email: '', password: '', role: '', agreeTerms: false });
