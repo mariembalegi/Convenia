@@ -19,9 +19,9 @@ public class Demande {
     @Column(nullable = false, length = 200)
     private String titre;
     
-    @Enumerated(EnumType.STRING)
+ 
     @Column(name = "type_convention", nullable = false)
-    private TypeConvention typeConvention;
+    private String typeConvention;
     
     @Column(columnDefinition = "TEXT")
     private String objectif;
@@ -29,30 +29,19 @@ public class Demande {
     @Column(columnDefinition = "TEXT")
     private String description;
     
-    @Column(name = "duree_prevue")
-    private Integer dureePrevue; 
-    
-    @Column(name = "date_debut_prevue")
-    private LocalDate dateDebutPrevue;
-    
-    @Column(name = "date_fin_prevue")
-    private LocalDate dateFinPrevue;
-    
-    @Column(name = "nombre_etudiants_concernes")
-    private Integer nombreEtudiantsConcernes;
-    
+
     @Column(columnDefinition = "TEXT")
     private String commentaires;
     
-    @Enumerated(EnumType.STRING)
+ 
     @Column(nullable = false)
-    private StatutDemande statut = StatutDemande.SOUMISE;
+    private String statut;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "etablissement_partenaire_id", nullable = false)
     private EtablissementPartenaire etablissementPartenaire;
     
@@ -92,8 +81,8 @@ public class Demande {
     public String getTitre() { return titre; }
     public void setTitre(String titre) { this.titre = titre; }
     
-    public TypeConvention getTypeConvention() { return typeConvention; }
-    public void setTypeConvention(TypeConvention typeConvention) { 
+    public String getTypeConvention() { return typeConvention; }
+    public void setTypeConvention(String typeConvention) { 
         this.typeConvention = typeConvention; 
     }
     
@@ -103,29 +92,12 @@ public class Demande {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
     
-    public Integer getDureePrevue() { return dureePrevue; }
-    public void setDureePrevue(Integer dureePrevue) { this.dureePrevue = dureePrevue; }
-    
-    public LocalDate getDateDebutPrevue() { return dateDebutPrevue; }
-    public void setDateDebutPrevue(LocalDate dateDebutPrevue) { 
-        this.dateDebutPrevue = dateDebutPrevue; 
-    }
-    
-    public LocalDate getDateFinPrevue() { return dateFinPrevue; }
-    public void setDateFinPrevue(LocalDate dateFinPrevue) { 
-        this.dateFinPrevue = dateFinPrevue; 
-    }
-    
-    public Integer getNombreEtudiantsConcernes() { return nombreEtudiantsConcernes; }
-    public void setNombreEtudiantsConcernes(Integer nombreEtudiantsConcernes) { 
-        this.nombreEtudiantsConcernes = nombreEtudiantsConcernes; 
-    }
     
     public String getCommentaires() { return commentaires; }
     public void setCommentaires(String commentaires) { this.commentaires = commentaires; }
     
-    public StatutDemande getStatut() { return statut; }
-    public void setStatut(StatutDemande statut) { this.statut = statut; }
+    public String getStatut() { return statut; }
+    public void setStatut(String statut) { this.statut = statut; }
     
     public User getUser() { return user; }
     public void setEnseignantChercheur(User user) { 
@@ -166,23 +138,3 @@ public class Demande {
     }
 }
 
-enum TypeConvention {
-    ECHANGE_ETUDIANTS,
-    DELOCALISATION_FORMATION,
-    DOUBLE_DIPLOME,
-    MOBILITE_ENSEIGNANTS,
-    RECHERCHE_COLLABORATIVE,
-    AUTRE
-}
-
-enum StatutDemande {
-    SOUMISE,                    
-    EN_COURS_INSTRUCTION_DRI,   
-    EN_COURS_INSTRUCTION_DEVE,  
-    EN_COURS_INSTRUCTION_CEVU,  
-    EN_COURS_INSTRUCTION_CA,    
-    MODIFICATION_REQUISE,       
-    VALIDEE,                    
-    REJETEE,                    
-    ARCHIVEE                    
-}

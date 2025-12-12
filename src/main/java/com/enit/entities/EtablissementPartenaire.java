@@ -23,9 +23,8 @@ public class EtablissementPartenaire {
     @Column(length = 100)
     private String ville;
     
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TypeEtablissement type;
+    private String type;
     
     @Column(columnDefinition = "TEXT")
     private String adresse;
@@ -69,8 +68,8 @@ public class EtablissementPartenaire {
     public String getVille() { return ville; }
     public void setVille(String ville) { this.ville = ville; }
     
-    public TypeEtablissement getType() { return type; }
-    public void setType(TypeEtablissement type) { this.type = type; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
     
     public String getAdresse() { return adresse; }
     public void setAdresse(String adresse) { this.adresse = adresse; }
@@ -96,10 +95,3 @@ public class EtablissementPartenaire {
     }
 }
 
-enum TypeEtablissement {
-    UNIVERSITE,
-    ECOLE_SUPERIEURE,
-    INSTITUT_RECHERCHE,
-    GRANDE_ECOLE,
-    AUTRE
-}

@@ -23,13 +23,7 @@ public class User implements Serializable {
     private String password;   // mot de passe hashé (BCrypt)
 
     @Column(nullable = false)
-    private String fullName;   // nom complet de l’enseignant-chercheur
-
-    @Column(nullable = false)
     private String role;       // "ENSEIGNANT", "DRI", "ADMIN"
-
-    @Column(nullable = false)
-    private boolean active = true;  // compte activé ou non
 
     public User() {}
 
@@ -37,7 +31,6 @@ public class User implements Serializable {
         this.username = username;
         this.email=email;
         this.password = password;
-        this.fullName = fullName;
         this.role = role;
     }
 
@@ -70,13 +63,6 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
 
     public String getRole() {
         return role;
@@ -86,11 +72,4 @@ public class User implements Serializable {
         this.role = role;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 }
