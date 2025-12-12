@@ -1,59 +1,54 @@
 package com.enit.entities;
 
-import java.io.Serializable;
-
 import jakarta.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Une seule table pour tous les types
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING) // colonne role
+public abstract class User implements Serializable {
+
+    /**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-	
-    @Id
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String fullName;
+
     @Column(nullable = false, unique = true)
-    private String username;   // login unique (email ou identifiant LDAP)
-
-    @Column(nullable = false, unique = true)
-    private String email;  // ADDED THIS - was missing!
-    
-    @Column(nullable = false)
-    private String password;   // mot de passe hashé (BCrypt)
+    private String email;
 
     @Column(nullable = false)
-    private String fullName;   // nom complet de l’enseignant-chercheur
+    private String password;
 
-    @Column(nullable = false)
-    private String role;       // "ENSEIGNANT", "DRI", "ADMIN"
-
-    @Column(nullable = false)
-    private boolean active = true;  // compte activé ou non
-
+    // ===== Constructeurs =====
     public User() {}
 
-    public User(String username,String email, String password, String fullName, String role) {
-        this.username = username;
-        this.email=email;
-        this.password = password;
+    public User(String fullName, String email, String password) {
         this.fullName = fullName;
-        this.role = role;
+        this.email = email;
+        this.password = password;
     }
 
-    // Getters & setters
+    // ===== Getters & Setters =====
     public Long getId() {
         return id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
-    
+
     public String getEmail() {
         return email;
     }
@@ -68,29 +63,5 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 }
