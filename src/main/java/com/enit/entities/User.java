@@ -1,28 +1,31 @@
 package com.enit.entities;
 
-import java.io.Serializable;
-
 import jakarta.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Une seule table pour tous les types
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING) // colonne role
+public abstract class User implements Serializable {
+
+    /**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-	
-    @Id
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String username;   // login unique (email ou identifiant LDAP)
+    @Column(nullable = false)
+    private String fullName;
 
     @Column(nullable = false, unique = true)
-    private String email;  // ADDED THIS - was missing!
-    
-    @Column(nullable = false)
-    private String password;   // mot de passe hashé (BCrypt)
+    private String email;
 
     @Column(nullable = false)
+<<<<<<< HEAD
     private String role;       // "ENSEIGNANT", "DRI", "ADMIN"
 
     public User() {}
@@ -32,21 +35,32 @@ public class User implements Serializable {
         this.email=email;
         this.password = password;
         this.role = role;
+=======
+    private String password;
+
+    // ===== Constructeurs =====
+    public User() {}
+
+    public User(String fullName, String email, String password) {
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+>>>>>>> 317ac65629f21f3349e70fb3d57d8aae62cb8d03
     }
 
-    // Getters & setters
+    // ===== Getters & Setters =====
     public Long getId() {
         return id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
-    
+
     public String getEmail() {
         return email;
     }
@@ -62,6 +76,7 @@ public class User implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+<<<<<<< HEAD
 
 
     public String getRole() {
@@ -73,3 +88,6 @@ public class User implements Serializable {
     }
 
 }
+=======
+}
+>>>>>>> 317ac65629f21f3349e70fb3d57d8aae62cb8d03
